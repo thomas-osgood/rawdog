@@ -24,10 +24,15 @@ func (ts *TeamServer) Start() (err error) {
 	return nil
 }
 
+// function designed to add a new endpoint handler
+// to the server's endpoint map.
 func (ts *TeamServer) AddEndpoint(endpoint int, handler TcpEndpointHandler) {
 	ts.endpoints[endpoint] = handler
 }
 
+// function designed to act as the main loop for
+// the server. this will accept connections and
+// spawn the handleConn function in a new go routine.
 func (ts *TeamServer) acceptConnections() {
 	var conn net.Conn
 	var err error
@@ -44,6 +49,9 @@ func (ts *TeamServer) acceptConnections() {
 	}
 }
 
+// function designed to handle the connection from
+// the client. this will dispatch the request to the
+// correct endpoint and respond to the client accordingly.
 func (ts *TeamServer) handleConn(conn net.Conn) {
 	defer conn.Close()
 
