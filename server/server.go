@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net"
 	"net/http"
@@ -10,6 +9,8 @@ import (
 	"rawdog/server/internal/messages"
 )
 
+// function designed to start the server listening
+// for incoming connections.
 func (ts *TeamServer) Start() (err error) {
 	ts.listener, err = net.Listen("tcp", ts.listenAddress)
 	if err != nil {
@@ -63,12 +64,9 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 	var response comms.TcpStatusMessage = comms.TcpStatusMessage{Code: http.StatusOK}
 	var transmission *comms.TcpTransmission
 
+	// read client request.
 	transmission, err = comms.ReadTransmission(conn)
 	if err != nil {
-		if err == io.EOF {
-			return
-		}
-
 		log.Printf(messages.ERR_DATA_READ, err.Error())
 		return
 	}
@@ -117,6 +115,7 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 		return
 	}
 
+	// send response to the client.
 	err = comms.SendTransmission(conn, messageBuff, "")
 	if err != nil {
 		log.Printf(messages.ERR_SEND_RESPONSE, err.Error())
