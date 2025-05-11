@@ -11,6 +11,7 @@ import (
 // passed in.
 func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	var config *TeamServerConfig = &TeamServerConfig{
+		InternalErrorFunc:      nil,
 		InvalidEndpointHandler: nil,
 		ListenAddress:          defaults.DEFAULT_ADDRESS,
 		QuitChan:               make(chan struct{}),
@@ -32,10 +33,17 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		config.InvalidEndpointHandler = defaults.InvalidEndpointHandler
 	}
 
+	// if no InternalErrorFunc has been set, use the
+	// default function.
+	if config.InternalErrorFunc == nil {
+		config.InternalErrorFunc = defaults.InternalErrorSender
+	}
+
 	// assign values to the teamserver that will
 	// be returned by this function.
 	ts = &TeamServer{
 		endpoints:              make(map[int]TcpEndpointHandler),
+		internalErrorFunc:      config.InternalErrorFunc,
 		invalidEndpointHandler: config.InvalidEndpointHandler,
 		listenAddress:          config.ListenAddress,
 		quitChan:               config.QuitChan,
