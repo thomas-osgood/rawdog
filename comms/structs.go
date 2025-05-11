@@ -16,8 +16,14 @@ type TcpStatusMessage struct {
 
 // structure of a TCP transmission.
 type TcpTransmission struct {
-	MdSize   uint16
-	DatSize  uint64
-	Data     []byte
+	// unsigned int representing the size of
+	// the data/payload.
+	DatSize uint64
+	// data/payload value.
+	Data []byte
+	// unsigned short representing the size
+	// of the metadata.
+	MdSize uint16
+	// metadata value.
 	Metadata []byte
 }
