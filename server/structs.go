@@ -1,9 +1,13 @@
 package server
 
-import "net"
+import (
+	"net"
+	"rawdog/comms"
+)
 
 // structure defining the TeamServer object.
 type TeamServer struct {
+	internalErrorFunc      comms.TcpTransmissionFunc
 	invalidEndpointHandler TcpEndpointHandler
 	listenAddress          string
 	listener               net.Listener
@@ -14,6 +18,9 @@ type TeamServer struct {
 // structure defining the various configuration
 // options that can be set for a new TeamServer.
 type TeamServerConfig struct {
+	// function that will transmit error messages
+	// to the client.
+	InternalErrorFunc comms.TcpTransmissionFunc
 	// function that will handle when an invalid
 	// endpoint has been requested.
 	InvalidEndpointHandler TcpEndpointHandler
