@@ -1,12 +1,29 @@
 package defaults
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"rawdog/comms"
 	"rawdog/server/internal/messages"
 )
+
+func InternalErrorSender(conn net.Conn, message []byte, md string) (err error) {
+	var payload []byte
+	var transmission comms.TcpStatusMessage = comms.TcpStatusMessage{
+		Code:    http.StatusInternalServerError,
+		Message: string(message),
+	}
+
+	payload, err = json.Marshal(&transmission)
+	if err != nil {
+		return err
+	}
+
+	return comms.SendTransmission(conn, payload, md)
+}
 
 // function designed to handle when a request comes in
 // to an endpoint that does not exist.
