@@ -7,12 +7,22 @@ import (
 
 // structure defining the TeamServer object.
 type TeamServer struct {
-	internalErrorFunc      comms.TcpTransmissionFunc
+	// function that will fire off when an error occurs
+	// during the handling/dispatching of a request.
+	internalErrorFunc comms.TcpTransmissionFunc
+	// handler that will be used when an invalid endpoint
+	// gets requested.
 	invalidEndpointHandler TcpEndpointHandler
-	listenAddress          string
-	listener               net.Listener
-	quitChan               chan struct{}
-	endpoints              EndpointMap
+	// address the server will listen for connections on.
+	listenAddress string
+	// TCP listener for the server. this will accept the
+	// incoming connections.
+	listener net.Listener
+	// channel designed to block until a signal is sent
+	// to it, indicating the server can shutdown.
+	quitChan chan struct{}
+	// map holding all endpoints the server can handle.
+	endpoints EndpointMap
 }
 
 // structure defining the various configuration
