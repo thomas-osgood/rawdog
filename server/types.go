@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"net"
 	"rawdog/comms"
 )
@@ -15,4 +16,4 @@ type EndpointMap map[int]TcpEndpointHandler
 
 // type defining the shape of a function that can be
 // used as a "TCP Endpoint".
-type TcpEndpointHandler func(net.Conn, comms.TcpHeader, []byte) (string, error)
+type TcpEndpointHandler func(net.Conn, comms.TcpHeader, *bytes.Buffer) (string, error)

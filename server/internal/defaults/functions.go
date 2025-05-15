@@ -1,6 +1,7 @@
 package defaults
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -27,7 +28,7 @@ func InternalErrorSender(conn net.Conn, message []byte, md string) (err error) {
 
 // function designed to handle when a request comes in
 // to an endpoint that does not exist.
-func InvalidEndpointHandler(conn net.Conn, md comms.TcpHeader, data []byte) (string, error) {
+func InvalidEndpointHandler(conn net.Conn, md comms.TcpHeader, data *bytes.Buffer) (string, error) {
 
 	// print out remote address and invalid endpoint
 	// requested.
