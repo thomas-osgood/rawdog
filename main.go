@@ -14,5 +14,5 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	ts.Start()
+	log.Fatal(ts.Start())
 }
