@@ -128,8 +128,8 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 		return nil, err
 	}
 
-	// read the decoded data into the buffer.
-	transmission.Data.Read(decoded)
+	// write the decoded data into the buffer.
+	transmission.Data.Write(decoded)
 
 	return transmission, nil
 }
