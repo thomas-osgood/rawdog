@@ -23,7 +23,7 @@ func InternalErrorSender(conn net.Conn, message []byte, md string) (err error) {
 		return err
 	}
 
-	return comms.SendTransmission(conn, payload, md)
+	return comms.SendTransmission(conn, bytes.NewBuffer(payload), md)
 }
 
 // function designed to handle when a request comes in
