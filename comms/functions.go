@@ -34,7 +34,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 	var iterations uint64
 	var mdBuff []byte
 	var n int
-	var payloadBuff []byte = make([]byte, 0)
+	var payloadBuff *bytes.Buffer = new(bytes.Buffer)
 	var sizeBuffD [constants.SZ_SIZEBLOCK_DAT]byte
 	var sizeBuffM [constants.SZ_SIZEBLOCK_MD]byte
 
@@ -118,12 +118,12 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 		}
 
 		// build the payload slice.
-		payloadBuff = append(payloadBuff, dataBuff[:n]...)
+		payloadBuff.Write(dataBuff[:n])
 	}
 
 	// base64-decode the payload that was sent and save
 	// the result in the Data field of the transmission object.
-	decoded, err = base64.StdEncoding.DecodeString(string(payloadBuff))
+	decoded, err = base64.StdEncoding.DecodeString(payloadBuff.String())
 	if err != nil {
 		return nil, err
 	}
