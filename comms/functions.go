@@ -152,7 +152,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 // references:
 //
 // https://stackoverflow.com/questions/16888357/convert-an-integer-to-a-byte-array
-func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
+func SendTransmission(conn net.Conn, data *bytes.Buffer, metadata string) (err error) {
 	var dataBuff *bytes.Buffer
 	var dataEnc string
 	var lenBuffD [constants.SZ_SIZEBLOCK_DAT]byte
@@ -170,7 +170,7 @@ func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
 
 	// base64-encode the passed in data and save the
 	// length of it.
-	dataEnc = base64.StdEncoding.EncodeToString(data)
+	dataEnc = base64.StdEncoding.EncodeToString(data.Bytes())
 	lenData = len(dataEnc)
 
 	// initialize byte buffer that will hold the
