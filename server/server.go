@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net"
@@ -116,7 +117,7 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 	}
 
 	// send response to the client.
-	err = comms.SendTransmission(conn, messageBuff, "")
+	err = comms.SendTransmission(conn, bytes.NewBuffer(messageBuff), "")
 	if err != nil {
 		log.Printf(messages.ERR_SEND_RESPONSE, err.Error())
 	}
