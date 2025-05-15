@@ -28,6 +28,7 @@ import (
 // Remaining N bytes: payload.
 func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) {
 	var dataBuff []byte = make([]byte, constants.SZ_DATABUFF)
+	var decoded []byte
 	var i uint64
 	var iterations uint64
 	var mdBuff []byte
@@ -83,7 +84,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 	// initialize the new byte slice that will hold
 	// the data from the agent based on the size read
 	// from the first 8 bytes of the received transmission.
-	transmission.Data = make([]byte, transmission.DatSize)
+	transmission.Data = new(bytes.Buffer)
 
 	// if the payload size is 0, do not attempt to continue.
 	//
@@ -121,10 +122,13 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 
 	// base64-decode the payload that was sent and save
 	// the result in the Data field of the transmission object.
-	transmission.Data, err = base64.StdEncoding.DecodeString(string(payloadBuff))
+	decoded, err = base64.StdEncoding.DecodeString(string(payloadBuff))
 	if err != nil {
 		return nil, err
 	}
+
+	// read the decoded data into the buffer.
+	transmission.Data.Read(decoded)
 
 	return transmission, nil
 }
@@ -148,14 +152,14 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 //
 // https://stackoverflow.com/questions/16888357/convert-an-integer-to-a-byte-array
 func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
-	var dataBuff []byte
+	var dataBuff *bytes.Buffer
 	var dataEnc string
 	var lenBuffD [constants.SZ_SIZEBLOCK_DAT]byte
 	var lenBuffM [constants.SZ_SIZEBLOCK_MD]byte
 	var lenData int
 	var lenMd int = len(metadata)
 	var mdBuff []byte = make([]byte, constants.SZ_METADATA_MAX)
-	var n int
+	var n int64
 
 	// make sure the metadata length does not exceeed
 	// the max allowed buffer size.
@@ -170,7 +174,7 @@ func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
 
 	// initialize byte buffer that will hold the
 	// data to transmit to the client.
-	dataBuff = make([]byte, 0)
+	dataBuff = new(bytes.Buffer)
 
 	// set the first 2 bytes to be the length of the metadata.
 	binary.BigEndian.PutUint16(lenBuffM[:], uint16(lenMd))
@@ -183,16 +187,16 @@ func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
 	binary.BigEndian.PutUint64(lenBuffD[:], uint64(lenData))
 
 	// set the md length packet.
-	dataBuff = append(dataBuff, lenBuffM[:]...)
+	dataBuff.Write(lenBuffM[:])
 	// set the length packet.
-	dataBuff = append(dataBuff, lenBuffD[:]...)
+	dataBuff.Write(lenBuffD[:])
 	// set the metadata.
-	dataBuff = append(dataBuff, mdBuff...)
+	dataBuff.Write(mdBuff)
 	// set the data packet.
-	dataBuff = append(dataBuff, []byte(dataEnc)...)
+	dataBuff.Write([]byte(dataEnc))
 
 	// transmit the block to the client.
-	n, err = conn.Write(dataBuff)
+	n, err = io.Copy(conn, dataBuff)
 	if err != nil {
 		return err
 	}

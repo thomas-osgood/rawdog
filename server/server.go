@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bytes"
 	"encoding/json"
 	"log"
 	"net"
@@ -99,7 +98,7 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 
 	// execute the correct handler function and
 	// process the request.
-	response.Message, err = routeHandler(conn, md, bytes.NewBuffer(transmission.Data))
+	response.Message, err = routeHandler(conn, md, transmission.Data)
 
 	// if there was an error handling the transmission,
 	// set the message to the error.

@@ -1,5 +1,7 @@
 package comms
 
+import "bytes"
+
 // structure of the metadata block that will
 // be expected in a transmission.
 type TcpHeader struct {
@@ -20,7 +22,7 @@ type TcpTransmission struct {
 	// the data/payload.
 	DatSize uint64
 	// data/payload value.
-	Data []byte
+	Data *bytes.Buffer
 	// unsigned short representing the size
 	// of the metadata.
 	MdSize uint16
