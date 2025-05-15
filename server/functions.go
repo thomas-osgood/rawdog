@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"rawdog/server/internal/defaults"
+	"rawdog/server/internal/messages"
 	"strings"
 )
 
@@ -58,7 +59,7 @@ func WithInvalidEndpointHandler(handler TcpEndpointHandler) TeamServerConfigFunc
 	return func(tsc *TeamServerConfig) error {
 
 		if tsc.InvalidEndpointHandler != nil {
-			return fmt.Errorf("can only set one InvalidEndpointHandler")
+			return fmt.Errorf(messages.ERR_IEH_SET)
 		}
 
 		tsc.InvalidEndpointHandler = handler
