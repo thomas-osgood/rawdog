@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"rawdog/comms/internal/constants"
+	"rawdog/comms/internal/messages"
 )
 
 // function designed to read data from a TCP transmission.
@@ -164,7 +165,7 @@ func SendTransmission(conn net.Conn, data []byte, metadata string) (err error) {
 	// make sure the metadata length does not exceeed
 	// the max allowed buffer size.
 	if lenMd > int(constants.SZ_METADATA_MAX) {
-		return fmt.Errorf("metadata size of %d bytes is too large. max size is %d bytes", lenMd, constants.SZ_METADATA_MAX)
+		return fmt.Errorf(messages.ERR_MD_LARGE, lenMd, constants.SZ_METADATA_MAX)
 	}
 
 	// base64-encode the passed in data and save the
