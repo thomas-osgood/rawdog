@@ -75,7 +75,7 @@ func WithListenAddress(listenaddress string) TeamServerConfigFunc {
 		listenaddress = strings.TrimSpace(listenaddress)
 
 		if len(listenaddress) < 1 {
-			return fmt.Errorf("listenaddress cannot be an empty string")
+			return fmt.Errorf(messages.ERR_LISTEN_EMPTY)
 		}
 
 		tsc.ListenAddress = listenaddress
