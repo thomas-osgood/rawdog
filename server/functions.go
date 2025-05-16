@@ -10,6 +10,16 @@ import (
 // function designed to create and initialize a
 // new teamserver based on the configuration options
 // passed in.
+//
+// Example:
+//
+//	var err error
+//	var newsrv *TeamServer
+//
+//	newsrv, err = NewTeamServer(WithListenAddress("0.0.0.0:9999"))
+//	if err != nil {
+//		log.Fatal(err)
+//	}
 func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	var config *TeamServerConfig = &TeamServerConfig{
 		InternalErrorFunc:      nil,
