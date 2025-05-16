@@ -59,6 +59,21 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	return ts, nil
 }
 
+// function designed to set the endpoints map the server
+// will use when handling requests.
+func WithEndpoints(endpoints EndpointMap) TeamServerConfigFunc {
+	return func(tsc *TeamServerConfig) error {
+
+		if tsc.Endpoints != nil {
+			return fmt.Errorf(messages.ERR_ENDPOINT_MAP_SET)
+		}
+
+		tsc.Endpoints = endpoints
+
+		return nil
+	}
+}
+
 // function designed to set the InvalidEndpointHandler
 // that will be used with the server.
 func WithInvalidEndpointHandler(handler TcpEndpointHandler) TeamServerConfigFunc {
