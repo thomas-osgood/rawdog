@@ -6,8 +6,10 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"rawdog/comms"
-	"rawdog/server/internal/messages"
+
+	"github.com/thomas-osgood/rawdog/comms"
+
+	"github.com/thomas-osgood/rawdog/server/internal/messages"
 )
 
 // function designed to start the server listening

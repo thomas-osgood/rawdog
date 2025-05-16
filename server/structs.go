@@ -2,7 +2,8 @@ package server
 
 import (
 	"net"
-	"rawdog/comms"
+
+	"github.com/thomas-osgood/rawdog/comms"
 )
 
 // structure defining the TeamServer object.

@@ -2,9 +2,10 @@ package server
 
 import (
 	"fmt"
-	"rawdog/server/internal/defaults"
-	"rawdog/server/internal/messages"
 	"strings"
+
+	"github.com/thomas-osgood/rawdog/server/internal/defaults"
+	"github.com/thomas-osgood/rawdog/server/internal/messages"
 )
 
 // function designed to create and initialize a

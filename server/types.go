@@ -3,7 +3,8 @@ package server
 import (
 	"bytes"
 	"net"
-	"rawdog/comms"
+
+	"github.com/thomas-osgood/rawdog/comms"
 )
 
 // type defining a function that can be used to

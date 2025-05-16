@@ -8,8 +8,9 @@ import (
 	"io"
 	"log"
 	"net"
-	"rawdog/comms/internal/constants"
-	"rawdog/comms/internal/messages"
+
+	"github.com/thomas-osgood/rawdog/comms/internal/constants"
+	"github.com/thomas-osgood/rawdog/comms/internal/messages"
 )
 
 // function designed to read data from a TCP transmission.
