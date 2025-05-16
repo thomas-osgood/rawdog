@@ -28,6 +28,8 @@ type TeamServer struct {
 // structure defining the various configuration
 // options that can be set for a new TeamServer.
 type TeamServerConfig struct {
+	// map holding desired endpoints for the server.
+	Endpoints EndpointMap
 	// function that will transmit error messages
 	// to the client.
 	InternalErrorFunc comms.TcpTransmissionFunc
