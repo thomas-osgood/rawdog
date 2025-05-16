@@ -11,6 +11,8 @@ import (
 	"rawdog/server/internal/messages"
 )
 
+// function designed to transmit an internal
+// error message to the client.
 func InternalErrorSender(conn net.Conn, message []byte, md string) (err error) {
 	var payload []byte
 	var transmission comms.TcpStatusMessage = comms.TcpStatusMessage{
