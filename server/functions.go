@@ -34,6 +34,12 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		config.InvalidEndpointHandler = defaults.InvalidEndpointHandler
 	}
 
+	// if no custom endpoint map has been specified, create
+	// a blank map.
+	if config.Endpoints == nil {
+		config.Endpoints = make(EndpointMap)
+	}
+
 	// if no InternalErrorFunc has been set, use the
 	// default function.
 	if config.InternalErrorFunc == nil {
@@ -43,7 +49,7 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	// assign values to the teamserver that will
 	// be returned by this function.
 	ts = &TeamServer{
-		endpoints:              make(EndpointMap),
+		endpoints:              config.Endpoints,
 		internalErrorFunc:      config.InternalErrorFunc,
 		invalidEndpointHandler: config.InvalidEndpointHandler,
 		listenAddress:          config.ListenAddress,
