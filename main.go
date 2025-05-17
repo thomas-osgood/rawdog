@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"rawdog/server"
+
+	"github.com/thomas-osgood/rawdog/server"
 )
 
 func main() {
