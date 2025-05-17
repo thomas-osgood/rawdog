@@ -75,7 +75,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 		}
 
 		// because the metadata block is guarenteed to be
-		// 1024 bytes, any space not used will be NULL bytes (\x00)
+		// MdSize bytes, any space not used will be NULL bytes (\x00)
 		// and need to be trimmed manually or there will be
 		// JSON Unmarshal errors.
 		transmission.Metadata = bytes.Trim(mdBuff[:n], constants.NULL_BYTE)
@@ -84,8 +84,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 	}
 
 	// initialize the new byte slice that will hold
-	// the data from the agent based on the size read
-	// from the first 8 bytes of the received transmission.
+	// the data from the client.
 	transmission.Data = new(bytes.Buffer)
 
 	// if the payload size is 0, do not attempt to continue.
