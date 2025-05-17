@@ -159,7 +159,7 @@ func SendTransmission(conn net.Conn, data *bytes.Buffer, metadata string) (err e
 	var lenBuffM [constants.SZ_SIZEBLOCK_MD]byte
 	var lenData int
 	var lenMd int = len(metadata)
-	var mdBuff []byte = make([]byte, constants.SZ_METADATA_MAX)
+	var mdBuff []byte
 	var n int64
 
 	// make sure the metadata length does not exceeed
