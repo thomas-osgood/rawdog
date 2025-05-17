@@ -13,6 +13,34 @@ import (
 	"github.com/thomas-osgood/rawdog/comms/internal/messages"
 )
 
+// helper function designed to read the metadata size and
+// payload size from a given connection.
+func readSizes(conn net.Conn) (mdSize uint16, dataSize uint64, err error) {
+	var n int
+	var sizeBuffD []byte = make([]byte, constants.SZ_SIZEBLOCK_DAT)
+	var sizeBuffM []byte = make([]byte, constants.SZ_SIZEBLOCK_MD)
+
+	// first 2 bytes will hold the size of the metadata.
+	n, err = conn.Read(sizeBuffM)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	// convert the transmitted metdata size to a uint16 (unsigned short).
+	mdSize = binary.BigEndian.Uint16(sizeBuffM[:n])
+
+	// first 8 bytes will hold the size of the payload.
+	n, err = conn.Read(sizeBuffD)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	// convert the transmitted payload size to a uint64.
+	dataSize = binary.BigEndian.Uint64(sizeBuffD[:n])
+
+	return mdSize, dataSize, nil
+}
+
 // function designed to read data from a TCP transmission.
 //
 // this will unpack the transmission and handle
@@ -36,32 +64,17 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 	var mdBuff []byte
 	var n int
 	var payloadBuff *bytes.Buffer = new(bytes.Buffer)
-	var sizeBuffD [constants.SZ_SIZEBLOCK_DAT]byte
-	var sizeBuffM [constants.SZ_SIZEBLOCK_MD]byte
 
 	// initialize the object that will be returned to
 	// avoid NIL dereference errors.
 	transmission = new(TcpTransmission)
 
-	// first 2 bytes will hold the size of the metadata.
-	n, err = conn.Read(sizeBuffM[:])
+	// read the expected size of the metadata and the
+	// expected size of the data.
+	transmission.MdSize, transmission.DatSize, err = readSizes(conn)
 	if err != nil {
 		return nil, err
 	}
-
-	// convert the transmitted metadata size to a uint16
-	// so it can be used later on in this function.
-	transmission.MdSize = binary.BigEndian.Uint16(sizeBuffM[:n])
-
-	// next 8 bytes will hold the size of the payload.
-	n, err = conn.Read(sizeBuffD[:])
-	if err != nil {
-		return nil, err
-	}
-
-	// convert the transmitted payload size to a uint64
-	// so it can be used later on in this function.
-	transmission.DatSize = binary.BigEndian.Uint64(sizeBuffD[:n])
 
 	if transmission.MdSize > 0 {
 		// initialize a byte for the metadata and allocate
