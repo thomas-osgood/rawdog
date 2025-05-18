@@ -76,7 +76,13 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 
 	// if no metadata was received, return an error.
 	if transmission.MdSize < 1 {
-		ts.internalErrorFunc(conn, []byte("no metadata found"), "")
+
+		messageBuff, err = ts.encryptor.Encrypt([]byte("no metadata found"))
+		if err != nil {
+			return
+		}
+
+		ts.internalErrorFunc(conn, messageBuff, "")
 		return
 	}
 
@@ -84,7 +90,14 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 	// so the data can be dispatched correctly.
 	err = json.Unmarshal(transmission.Metadata, &md)
 	if err != nil {
-		ts.internalErrorFunc(conn, []byte(err.Error()), "")
+
+		messageBuff, err = ts.encryptor.Encrypt([]byte(err.Error()))
+		if err != nil {
+			return
+		}
+
+		ts.internalErrorFunc(conn, messageBuff, "")
+
 		return
 	}
 
