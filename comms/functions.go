@@ -235,3 +235,18 @@ func SendTransmission(conn net.Conn, data *bytes.Buffer, metadata string) (err e
 
 	return nil
 }
+
+// function designed to send the outgoing transmission
+// using a given context.
+//
+// this will call the SendTransmission function.
+func SendTransmissionCtx(ctx context.Context, conn net.Conn, data *bytes.Buffer, metadata string) (err error) {
+	defer ctx.Done()
+
+	select {
+	case <-ctx.Done():
+		return fmt.Errorf(messages.ERR_SEND_TIMEOUT)
+	default:
+		return SendTransmission(conn, data, metadata)
+	}
+}
