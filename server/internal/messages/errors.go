@@ -2,7 +2,7 @@ package messages
 
 const ERR_CONN_ACCEPT string = "ERROR Accepting Conn: %s\n"
 const ERR_DATA_READ string = "Error Reading Data: %s\n"
-const ERR_ENCRYPT_DATA string = "error encrypting data: %s"
+const ERR_ENCRYPT_DATA string = "Error Encrypting Data: %s"
 const ERR_ENCRYPTOR_SET string = "the encryptor has already been set"
 const ERR_ENDPOINT_MAP_SET string = "endpoint map already set"
 const ERR_ENDPOINT_UNKNOWN string = "unknown endpoint \"%d\""
