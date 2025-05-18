@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"time"
 
 	"github.com/thomas-osgood/rawdog/comms/internal/constants"
 	"github.com/thomas-osgood/rawdog/comms/internal/messages"
@@ -152,12 +153,29 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 // using a given context.
 //
 // this will call the ReadTransmission function.
-func ReadTransmissionCtx(ctx context.Context, conn net.Conn) (transmission *TcpTransmission, err error) {
-	defer ctx.Done()
+func ReadTransmissionCtx(timeout time.Duration, conn net.Conn) (transmission *TcpTransmission, err error) {
+	var cancel context.CancelFunc
+	var ctx context.Context
+
+	if timeout < 1 {
+		return nil, fmt.Errorf(messages.ERR_TIMEOUT_LT_ONE)
+	}
+
+	ctx, cancel = context.WithTimeout(context.Background(), timeout)
+	defer cancel()
 
 	select {
 	case <-ctx.Done():
-		return nil, fmt.Errorf(messages.ERR_READ_TIMEOUT)
+
+		switch ctx.Err() {
+		case context.Canceled:
+			return nil, fmt.Errorf(messages.ERR_READ_CANCELLED)
+		case context.DeadlineExceeded:
+			return nil, fmt.Errorf(messages.ERR_READ_TIMEOUT)
+		default:
+			return nil, ctx.Err()
+		}
+
 	default:
 		return ReadTransmission(conn)
 	}
@@ -240,12 +258,29 @@ func SendTransmission(conn net.Conn, data *bytes.Buffer, metadata string) (err e
 // using a given context.
 //
 // this will call the SendTransmission function.
-func SendTransmissionCtx(ctx context.Context, conn net.Conn, data *bytes.Buffer, metadata string) (err error) {
-	defer ctx.Done()
+func SendTransmissionCtx(timeout time.Duration, conn net.Conn, data *bytes.Buffer, metadata string) (err error) {
+	var cancel context.CancelFunc
+	var ctx context.Context
+
+	if timeout < 1 {
+		return fmt.Errorf(messages.ERR_TIMEOUT_LT_ONE)
+	}
+
+	ctx, cancel = context.WithTimeout(context.Background(), timeout)
+	defer cancel()
 
 	select {
 	case <-ctx.Done():
-		return fmt.Errorf(messages.ERR_SEND_TIMEOUT)
+
+		switch ctx.Err() {
+		case context.Canceled:
+			return fmt.Errorf(messages.ERR_SEND_CANCELLED)
+		case context.DeadlineExceeded:
+			return fmt.Errorf(messages.ERR_SEND_TIMEOUT)
+		default:
+			return ctx.Err()
+		}
+
 	default:
 		return SendTransmission(conn, data, metadata)
 	}
