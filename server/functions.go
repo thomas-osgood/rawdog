@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/thomas-osgood/rawdog/server/internal/defaults"
 	"github.com/thomas-osgood/rawdog/server/internal/messages"
@@ -27,6 +28,8 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		InvalidEndpointHandler: nil,
 		ListenAddress:          defaults.DEFAULT_ADDRESS,
 		QuitChan:               make(chan struct{}),
+		RecvTimeout:            0,
+		SendTimeout:            0,
 	}
 	var configFunc TeamServerConfigFunc
 
@@ -65,6 +68,8 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		invalidEndpointHandler: config.InvalidEndpointHandler,
 		listenAddress:          config.ListenAddress,
 		quitChan:               config.QuitChan,
+		timeoutRecv:            config.RecvTimeout,
+		timeoutSend:            config.SendTimeout,
 	}
 
 	return ts, nil
@@ -111,6 +116,32 @@ func WithListenAddress(listenaddress string) TeamServerConfigFunc {
 		}
 
 		tsc.ListenAddress = listenaddress
+
+		return nil
+	}
+}
+
+// function designed to set the receive timeout for the server.
+func WithRecvTimeout(timeout time.Duration) TeamServerConfigFunc {
+	return func(tsc *TeamServerConfig) error {
+		if tsc.RecvTimeout > 0 {
+			return fmt.Errorf(messages.ERR_TIMEOUT_RECV_SET)
+		}
+
+		tsc.RecvTimeout = timeout
+
+		return nil
+	}
+}
+
+// function designed to set the send timeout for the server.
+func WithSendTimeout(timeout time.Duration) TeamServerConfigFunc {
+	return func(tsc *TeamServerConfig) error {
+		if tsc.RecvTimeout > 0 {
+			return fmt.Errorf(messages.ERR_TIMEOUT_SEND_SET)
+		}
+
+		tsc.SendTimeout = timeout
 
 		return nil
 	}

@@ -2,6 +2,7 @@ package server
 
 import (
 	"net"
+	"time"
 
 	"github.com/thomas-osgood/rawdog/comms"
 )
@@ -24,6 +25,10 @@ type TeamServer struct {
 	// channel designed to block until a signal is sent
 	// to it, indicating the server can shutdown.
 	quitChan chan struct{}
+	// timeout duration for receiving transmissions.
+	timeoutRecv time.Duration
+	// timeout duration for sending transmissions.
+	timeoutSend time.Duration
 }
 
 // structure defining the various configuration
@@ -43,6 +48,14 @@ type TeamServerConfig struct {
 	//
 	// ex: 0.0.0.0:1234
 	ListenAddress string
+	// duration limit of a receive.
+	//
+	// after this limit is hit, a timeout error will be thrown.
+	RecvTimeout time.Duration
+	// duration limit of a send.
+	//
+	// after this limit is hit, a timeout error will be thrown.
+	SendTimeout time.Duration
 	// channel that will block to allow the server
 	// to run forever.
 	QuitChan chan struct{}
