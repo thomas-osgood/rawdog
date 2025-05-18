@@ -68,7 +68,7 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 	var transmission *comms.TcpTransmission
 
 	// read client request.
-	transmission, err = comms.ReadTransmissionCtx(ts.timeoutRecv, conn)
+	transmission, err = comms.RecvTransmissionCtx(ts.timeoutRecv, conn)
 	if err != nil {
 		log.Printf(messages.ERR_DATA_READ, err.Error())
 		return

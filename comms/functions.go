@@ -58,7 +58,7 @@ func readSizes(conn net.Conn) (mdSize uint16, dataSize uint64, err error) {
 // Next N bytes: metadata.
 //
 // Remaining N bytes: payload.
-func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) {
+func RecvTransmission(conn net.Conn) (transmission *TcpTransmission, err error) {
 	var dataBuff []byte = make([]byte, constants.SZ_DATABUFF)
 	var decoded []byte
 	var i uint64
@@ -152,8 +152,8 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 // function designed to read the incoming transmission
 // using a given timeout.
 //
-// this will call the ReadTransmission function.
-func ReadTransmissionCtx(timeout time.Duration, conn net.Conn) (transmission *TcpTransmission, err error) {
+// this will call the RecvTransmission function.
+func RecvTransmissionCtx(timeout time.Duration, conn net.Conn) (transmission *TcpTransmission, err error) {
 	var cancel context.CancelFunc
 	var ctx context.Context
 
@@ -177,7 +177,7 @@ func ReadTransmissionCtx(timeout time.Duration, conn net.Conn) (transmission *Tc
 		}
 
 	default:
-		return ReadTransmission(conn)
+		return RecvTransmission(conn)
 	}
 }
 
