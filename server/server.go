@@ -118,6 +118,13 @@ func (ts *TeamServer) handleConn(conn net.Conn) {
 		return
 	}
 
+	// encrypt the outbound transmission.
+	messageBuff, err = ts.encryptor.Encrypt(messageBuff)
+	if err != nil {
+		log.Printf(messages.ERR_ENCRYPT_DATA, err.Error())
+		return
+	}
+
 	// send response to the client.
 	err = comms.SendTransmission(conn, bytes.NewBuffer(messageBuff), "")
 	if err != nil {
