@@ -2,6 +2,7 @@ package comms
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
@@ -145,6 +146,21 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 	transmission.Data.Write(decoded)
 
 	return transmission, nil
+}
+
+// function designed to read the incoming transmission
+// using a given context.
+//
+// this will call the ReadTransmission function.
+func ReadTransmissionCtx(ctx context.Context, conn net.Conn) (transmission *TcpTransmission, err error) {
+	defer ctx.Done()
+
+	select {
+	case <-ctx.Done():
+		return nil, fmt.Errorf(messages.ERR_READ_TIMEOUT)
+	default:
+		return ReadTransmission(conn)
+	}
 }
 
 // function designed to tranmsit data to the client
