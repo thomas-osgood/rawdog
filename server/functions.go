@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/thomas-osgood/rawdog/encryption"
 	"github.com/thomas-osgood/rawdog/encryption/noencrypt"
 	"github.com/thomas-osgood/rawdog/server/internal/defaults"
 	"github.com/thomas-osgood/rawdog/server/internal/messages"
@@ -78,6 +79,21 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	}
 
 	return ts, nil
+}
+
+// function designed to set the RawdogEncryptor the server
+// will use.
+func WithEncryptor(encryptor encryption.RawdogEncryptor) TeamServerConfigFunc {
+	return func(tsc *TeamServerConfig) error {
+
+		if tsc.Encryptor != nil {
+			return fmt.Errorf(messages.ERR_ENCRYPTOR_SET)
+		}
+
+		tsc.Encryptor = encryptor
+
+		return nil
+	}
 }
 
 // function designed to set the endpoints map the server
