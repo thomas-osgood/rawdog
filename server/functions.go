@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/thomas-osgood/rawdog/encryption/noencrypt"
 	"github.com/thomas-osgood/rawdog/server/internal/defaults"
 	"github.com/thomas-osgood/rawdog/server/internal/messages"
 )
@@ -45,6 +46,14 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		config.InvalidEndpointHandler = defaults.InvalidEndpointHandler
 	}
 
+	// if no encryptor is specified, use the BlankEncryptor.
+	if config.Encryptor == nil {
+		config.Encryptor, err = noencrypt.New()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// if no custom endpoint map has been specified, create
 	// a blank map.
 	if config.Endpoints == nil {
@@ -60,6 +69,7 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 	// assign values to the teamserver that will
 	// be returned by this function.
 	ts = &TeamServer{
+		encryptor:              config.Encryptor,
 		endpoints:              config.Endpoints,
 		internalErrorFunc:      config.InternalErrorFunc,
 		invalidEndpointHandler: config.InvalidEndpointHandler,
