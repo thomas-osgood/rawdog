@@ -150,7 +150,7 @@ func ReadTransmission(conn net.Conn) (transmission *TcpTransmission, err error) 
 }
 
 // function designed to read the incoming transmission
-// using a given context.
+// using a given timeout.
 //
 // this will call the ReadTransmission function.
 func ReadTransmissionCtx(timeout time.Duration, conn net.Conn) (transmission *TcpTransmission, err error) {
@@ -255,7 +255,7 @@ func SendTransmission(conn net.Conn, data *bytes.Buffer, metadata string) (err e
 }
 
 // function designed to send the outgoing transmission
-// using a given context.
+// using a given timeout.
 //
 // this will call the SendTransmission function.
 func SendTransmissionCtx(timeout time.Duration, conn net.Conn, data *bytes.Buffer, metadata string) (err error) {
