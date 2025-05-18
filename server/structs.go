@@ -4,13 +4,10 @@ import (
 	"net"
 
 	"github.com/thomas-osgood/rawdog/comms"
-	"github.com/thomas-osgood/rawdog/encryption"
 )
 
 // structure defining the TeamServer object.
 type TeamServer struct {
-	// object that will encrypt/decrypt traffic.
-	encryptor encryption.RawdogEncryptor
 	// map holding all endpoints the server can handle.
 	endpoints EndpointMap
 	// function that will fire off when an error occurs
@@ -32,8 +29,6 @@ type TeamServer struct {
 // structure defining the various configuration
 // options that can be set for a new TeamServer.
 type TeamServerConfig struct {
-	// encryptor object that will be used by the server.
-	Encryptor encryption.RawdogEncryptor
 	// map holding desired endpoints for the server.
 	Endpoints EndpointMap
 	// function that will transmit error messages

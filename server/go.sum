@@ -1,4 +1,2 @@
 github.com/thomas-osgood/rawdog/comms v0.0.0-20250517211111-881e26b03c38 h1:27GW2DMN8l9c2DBNlaSAmIGn40Es4x8S1OukmA9Gh4A=
 github.com/thomas-osgood/rawdog/comms v0.0.0-20250517211111-881e26b03c38/go.mod h1:WQscUi85tiUzPQTgAYM5XcIAqWt8abX/i0bcpjlYI08=
-github.com/thomas-osgood/rawdog/encryption v0.0.0-20250517231722-a2aa62508eec h1:kbt/5IcjQGlwkyeIRUdT1sW9Kp64J1G4Jf89xmu6VIk=
-github.com/thomas-osgood/rawdog/encryption v0.0.0-20250517231722-a2aa62508eec/go.mod h1:0CAvqFm2V5OCais/aQcQ1gtFwfliT2QnBuxbc4aWPBo=
