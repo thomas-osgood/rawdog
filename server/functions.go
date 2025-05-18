@@ -60,6 +60,18 @@ func NewTeamServer(opts ...TeamServerConfigFunc) (ts *TeamServer, err error) {
 		config.InternalErrorFunc = defaults.InternalErrorSender
 	}
 
+	// if no recv timeout has been set, set the recv
+	// timeout to the default value.
+	if config.SendTimeout == 0 {
+		config.RecvTimeout = defaults.DEFAULT_READ_TIMEOUT
+	}
+
+	// if no send timeout has been set, set the send
+	// timeout to the default value.
+	if config.SendTimeout == 0 {
+		config.SendTimeout = defaults.DEFAULT_SEND_TIMEOUT
+	}
+
 	// assign values to the teamserver that will
 	// be returned by this function.
 	ts = &TeamServer{
